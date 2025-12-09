@@ -5,7 +5,7 @@
 
 <div align="center">
   <a href="https://meshsplatting.github.io">Project page</a> &nbsp;|&nbsp;
-  <a href="https://meshsplatting.github.io">ArXiv</a>
+  <a href="https://arxiv.org/abs/2512.06818">ArXiv</a>
   <br>
 </div>
 
