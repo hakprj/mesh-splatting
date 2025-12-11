@@ -233,7 +233,7 @@ def readColmapSceneInfo(path, images, eval, llffhold=8, aug=False):
         except Exception as e:
             print(f"An unexpected error occurred when trying to open depth_params.json file: {e}")
             sys.exit(1)
-    depths_folder = os.path.join(path, "test")
+    depths_folder = os.path.join(path, "depth")
 
     reading_dir = "images" if images == None else images
     cam_infos_unsorted = cam_infos_unsorted = readColmapCameras(

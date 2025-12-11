@@ -100,6 +100,7 @@ For real world datasets depth maps should be generated for each input images, to
    ```
    python Depth-Anything-V2/run.py --encoder vitl --pred-only --grayscale --img-path <path to input images> --outdir <output path>
    ```
+   Create a folder named 'depth' to store the depth maps. This folder should be placed alongside the folders containing the RGB images, for example: MipNeRF360/Garden/depth.
 5. Generate a `depth_params.json` file using:
     ```
     python utils/make_depth_scale.py --base_dir <path to colmap> --depths_dir <path to generated depths>
