@@ -80,15 +80,15 @@ class PipelineParams(ParamGroup):
 
 class OptimizationParams(ParamGroup):
     def __init__(self, parser):
-        self.iterations = 30_000
+        self.iterations = 45000
         self.position_lr_delay_mult = 0.01
-        self.position_lr_max_steps = 30_000
+        self.position_lr_max_steps = 45000
         self.lambda_dssim = 0.2
 
-        self.densification_interval = 500
+        self.densification_interval = 1000
 
         self.densify_from_iter = 500
-        self.densify_until_iter = 10000
+        self.densify_until_iter = 26000  
 
         self.random_background = False
         
@@ -101,7 +101,7 @@ class OptimizationParams(ParamGroup):
         self.lambda_weight = 1.9e-06
 
         # Normal loss
-        self.iteration_mesh = 5000
+        self.iteration_mesh = 18000
         self.lambda_normals = 0.00005
         self.lambda_normals_super = 0.01
 
@@ -113,21 +113,21 @@ class OptimizationParams(ParamGroup):
         self.intervall_add_triangles = 500
 
         # Prune triangles and vertices
-        self.prune_triangles_threshold = 0.235
+        self.prune_triangles_threshold = 0.30
 
         # PARAMETER SECOND STAGE
         self.lr_triangles_points_init = 0.0015
 
         self.start_opacity_floor = 5000
 
-        self.start_pruning = 4000
+        self.start_pruning = 16000
         self.sigma_until = 30000
-        self.final_opacity_iter = 24000
+        self.final_opacity_iter = 38000  
 
         self.sigma_start = 0
 
-        self.splitt_large_triangles = 100
-        self.start_upsampling = 20000
+        self.splitt_large_triangles = 60
+        self.start_upsampling = 28000
         self.upscaling_factor = 2
 
         self.size_probs_zero = 7.5e-05
