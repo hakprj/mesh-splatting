@@ -80,54 +80,58 @@ class PipelineParams(ParamGroup):
 
 class OptimizationParams(ParamGroup):
     def __init__(self, parser):
-        self.iterations = 45000
+        # --- hard cap
+        self.iterations = 30000
         self.position_lr_delay_mult = 0.01
-        self.position_lr_max_steps = 45000
+        self.position_lr_max_steps = 30000
         self.lambda_dssim = 0.2
 
+        # --- densification (stop earlier)
         self.densification_interval = 1000
+        self.intervall_add_triangles = 1000  # match interval (was 500)
 
         self.densify_from_iter = 500
-        self.densify_until_iter = 26000  
+        self.densify_until_iter = 20000      # was 26000
 
         self.random_background = False
-        
-        self.feature_lr = 0.0016 # 0.0025
-        self.max_points = 4000000
+
+        # --- appearance learning (slightly higher helps render)
+        self.feature_lr = 0.0025             # was 0.0016
+        self.max_points = 2_000_000          # was 4_000_000 (avoid triangle explosion)
 
         # Opacity & weight
         self.set_weight = 0.28
-        self.weight_lr =  0.03
+        self.weight_lr = 0.03
         self.lambda_weight = 1.9e-06
 
-        # Normal loss
+        # Normals (keep)
         self.iteration_mesh = 18000
         self.lambda_normals = 0.00005
         self.lambda_normals_super = 0.01
 
         self.add_percentage = 1.23
 
-        self.set_sigma = 1.0
+        # --- keep things soft early for stability
+        self.set_sigma = 0.6                 # was 1.0
+        self.sigma_start = 0
+        self.sigma_until = 26000             # was 30000 (end earlier)
 
-        # Add new triangles or vertices
-        self.intervall_add_triangles = 500
-
-        # Prune triangles and vertices
+        # --- pruning: late + gentle (keep your good choice)
+        self.start_pruning = 22000           # was 25000 (gives time to clean)
         self.prune_triangles_threshold = 0.12
 
-        # PARAMETER SECOND STAGE
+        # geometry LR (keep your good choice)
         self.lr_triangles_points_init = 0.0006
 
-        self.start_opacity_floor = 5000
+        # opacity schedule aligned to 30k
+        self.start_opacity_floor = 12000     # was 5000 (avoid early clamp)
+        self.final_opacity_iter = 28000      # was 38000 (must be < 30000)
 
-        self.start_pruning = 25000
-        self.sigma_until = 30000
-        self.final_opacity_iter = 38000  
-
-        self.sigma_start = 0
-
+        # splitting (keep)
         self.splitt_large_triangles = 90
-        self.start_upsampling = 28000
+
+        # --- upsampling: disable for 30k runs (not enough time to settle)
+        self.start_upsampling = 10**9        # effectively off (was 28000)
         self.upscaling_factor = 2
 
         self.size_probs_zero = 7.5e-05
@@ -139,12 +143,13 @@ class OptimizationParams(ParamGroup):
         self.max_diff_threshold = 0.5
         self.start_vertex_opt = 20000
 
+        # depth off (good for glasses)
         self.lamba_depth = 0.0
-
         self.depth_lambda_init = 0.0
         self.depth_lambda_final = 0.0
 
         super().__init__(parser, "Optimization Parameters")
+
 
 def get_combined_args(parser : ArgumentParser):
     cmdlne_string = sys.argv[1:]
