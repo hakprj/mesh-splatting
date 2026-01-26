@@ -113,20 +113,20 @@ class OptimizationParams(ParamGroup):
         self.intervall_add_triangles = 500
 
         # Prune triangles and vertices
-        self.prune_triangles_threshold = 0.30
+        self.prune_triangles_threshold = 0.12
 
         # PARAMETER SECOND STAGE
-        self.lr_triangles_points_init = 0.0015
+        self.lr_triangles_points_init = 0.0006
 
         self.start_opacity_floor = 5000
 
-        self.start_pruning = 16000
+        self.start_pruning = 25000
         self.sigma_until = 30000
         self.final_opacity_iter = 38000  
 
         self.sigma_start = 0
 
-        self.splitt_large_triangles = 60
+        self.splitt_large_triangles = 90
         self.start_upsampling = 28000
         self.upscaling_factor = 2
 
@@ -137,12 +137,12 @@ class OptimizationParams(ParamGroup):
 
         self.lambda_vertex = 0.00025
         self.max_diff_threshold = 0.5
-        self.start_vertex_opt = 12000
+        self.start_vertex_opt = 20000
 
-        self.lamba_depth = 0.05
+        self.lamba_depth = 0.0
 
-        self.depth_lambda_init = 0.01
-        self.depth_lambda_final = 0.001
+        self.depth_lambda_init = 0.0
+        self.depth_lambda_final = 0.0
 
         super().__init__(parser, "Optimization Parameters")
 
