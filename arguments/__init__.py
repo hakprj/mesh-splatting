@@ -77,8 +77,74 @@ class PipelineParams(ParamGroup):
         self.depth_ratio = 1.0
         self.debug = False
         super().__init__(parser, "Pipeline Parameters")
-
 class OptimizationParams(ParamGroup):
+    def __init__(self, parser):
+        self.iterations = 30_000
+        self.position_lr_delay_mult = 0.01
+        self.position_lr_max_steps = 30_000
+        self.lambda_dssim = 0.2
+
+        self.densification_interval = 500
+
+        self.densify_from_iter = 500
+        self.densify_until_iter = 10000
+
+        self.random_background = False
+        
+        self.feature_lr = 0.0016 # 0.0025
+        self.max_points = 4000000
+
+        # Opacity & weight
+        self.set_weight = 0.28
+        self.weight_lr =  0.03
+        self.lambda_weight = 1.9e-06
+
+        # Normal loss
+        self.iteration_mesh = 5000
+        self.lambda_normals = 0.00005
+        self.lambda_normals_super = 0.01
+
+        self.add_percentage = 1.23
+
+        self.set_sigma = 1.0
+
+        # Add new triangles or vertices
+        self.intervall_add_triangles = 500
+
+        # Prune triangles and vertices
+        self.prune_triangles_threshold = 0.235
+
+        # PARAMETER SECOND STAGE
+        self.lr_triangles_points_init = 0.0015
+
+        self.start_opacity_floor = 5000
+
+        self.start_pruning = 4000
+        self.sigma_until = 30000
+        self.final_opacity_iter = 24000
+
+        self.sigma_start = 0
+
+        self.splitt_large_triangles = 100
+        self.start_upsampling = 20000
+        self.upscaling_factor = 2
+
+        self.size_probs_zero = 7.5e-05
+        self.size_probs_zero_image_space = 0.0
+
+        self.prune_size = 1400
+
+        self.lambda_vertex = 0.00025
+        self.max_diff_threshold = 0.5
+        self.start_vertex_opt = 12000
+
+        self.lamba_depth = 0.05
+
+        self.depth_lambda_init = 0.01
+        self.depth_lambda_final = 0.001
+
+        super().__init__(parser, "Optimization Parameters")
+class OptimizationParams2(ParamGroup):
     def __init__(self, parser):
         # --- hard cap
         self.iterations = 30000
