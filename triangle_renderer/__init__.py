@@ -25,7 +25,8 @@ from scene.triangle_model import TriangleModel
 from utils.sh_utils import eval_sh
 from utils.point_utils import depth_to_normal
 import torch.nn.functional as F
-
+import os
+import cv2
 def normals_world_to_view(view, normal_world):
     # normal_world: [H,W,3]
     # c2w: camera -> world; so R_cw = c2w[:3,:3].T maps world -> camera
@@ -100,7 +101,8 @@ def compute_image_2d_pytorch_exact(vertices, projmatrix, W, H):
     return image_2D_pytorch
 
 
-def render(viewpoint_camera, pc : TriangleModel, pipe, bg_color : torch.Tensor, scaling_modifier = 1.0, override_color = None):
+def render(viewpoint_camera, pc : TriangleModel, pipe, bg_color : torch.Tensor, scaling_modifier = 1.0, override_color = None, iteration:int = 0,
+           model_path:str=""):
     """
     Render the scene. 
     
@@ -177,6 +179,15 @@ def render(viewpoint_camera, pc : TriangleModel, pipe, bg_color : torch.Tensor, 
     radii = radii[:vertex_index]
     scaling = scaling[:vertex_index]
     max_blending = max_blending[:vertex_index]
+
+    if model_path!="":
+        rendered_path = os.path.join(model_path,"rendered_images")
+        os.makedirs(rendered_path,exist_ok=True)
+        if viewpoint_camera.image_name == "frame_000000":
+            img = rendered_image.clone().detach().cpu().numpy()[0] * 255
+            cv2.putText(img, f"iter {iteration}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2)
+            out_file_name= os.path.join(rendered_path,f"{viewpoint_camera.image_name}_iter_{iteration}.jpeg")
+            cv2.imwrite(out_file_name,img)
        
     img_hr = rendered_image.unsqueeze(0)  # -> [1, 3, H, W]
     img_ds_area = F.interpolate(img_hr, size=(H_init, W_init), mode="area")  # [1, 3, H0, W0]

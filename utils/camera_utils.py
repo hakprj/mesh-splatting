@@ -51,24 +51,6 @@ def to_depth_tensor(depth_in):
     raise TypeError(f"Unsupported depth type: {type(depth_in)}")
 
 def loadCam(args, id, cam_info, resolution_scale):
-
-
-    if cam_info.depth_path != "":
-        try:
-            invdepthmap = cv2.imread(cam_info.depth_path, -1).astype(np.float32) / float(2**16)
-
-        except FileNotFoundError:
-            print(f"Error: The depth file at path '{cam_info.depth_path}' was not found.")
-            raise
-        except IOError:
-            print(f"Error: Unable to open the image file '{cam_info.depth_path}'. It may be corrupted or an unsupported format.")
-            raise
-        except Exception as e:
-            print(f"An unexpected error occurred when trying to read depth at {cam_info.depth_path}: {e}")
-            raise
-    else:
-        invdepthmap = None
-
     orig_w, orig_h = cam_info.image.size
 
     if args.resolution in [1, 2, 4, 8]:
@@ -90,6 +72,27 @@ def loadCam(args, id, cam_info, resolution_scale):
         scale = float(global_down) * float(resolution_scale)
         resolution = (int(orig_w / scale), int(orig_h / scale))
 
+
+    if cam_info.depth_path != "":
+        try:
+            invdepthmap = cv2.imread(cam_info.depth_path, -1).astype(np.float32) / float(2**16)
+            if len(invdepthmap.shape)==2:
+                invdepthmap = cv2.resize(invdepthmap, resolution, interpolation=cv2.INTER_NEAREST)
+
+        except FileNotFoundError:
+            print(f"Error: The depth file at path '{cam_info.depth_path}' was not found.")
+            raise
+        except IOError:
+            print(f"Error: Unable to open the image file '{cam_info.depth_path}'. It may be corrupted or an unsupported format.")
+            raise
+        except Exception as e:
+            print(f"An unexpected error occurred when trying to read depth at {cam_info.depth_path}: {e}")
+            raise
+    else:
+        invdepthmap = None
+
+
+    
     if len(cam_info.image.split()) > 3:
         resized_image_rgb = torch.cat([PILtoTorch(im, resolution) for im in cam_info.image.split()[:3]], dim=0)
         loaded_mask = PILtoTorch(cam_info.image.split()[3], resolution)

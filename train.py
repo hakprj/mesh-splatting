@@ -162,7 +162,7 @@ def training(
                 triangles.importance_score = torch.zeros((triangles._triangle_indices.shape[0]), dtype=torch.float, device="cuda") # reset to 0 to ensure that everything is deleted with an importance score of 0
         viewpoint_cam = viewpoint_stack.pop(randint(0, len(viewpoint_stack)-1))
 
-        render_pkg = render(viewpoint_cam, triangles, pipe, bg)
+        render_pkg = render(viewpoint_cam, triangles, pipe, bg,iteration=iteration,model_path=args.model_path)
         image = render_pkg["render"]
 
         # Loss
@@ -241,6 +241,8 @@ def training(
             Ll1depth_pure = torch.abs((invDepth  - mono_invdepth) * depth_mask).mean()
             Ll1depth = depth_l1_weight(iteration) * Ll1depth_pure 
             loss += Ll1depth
+            print(f"depth map is used loss = {Ll1depth}")
+
         else:
             Ll1depth = 0
 
@@ -284,7 +286,8 @@ def training(
             # Log and save
             
             training_report(tb_writer, scene_name, iteration, pixel_loss, loss, l1_loss, iter_start.elapsed_time(iter_end), testing_iterations, scene, render, (pipe, background))
-
+            if iteration%500==0:
+                scene.save(iteration)
             # Handle pruning operations
             if iteration % 500 == 0 and iteration < run_restricted_delaunay:
                 
