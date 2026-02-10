@@ -6,4 +6,5 @@ matplotlib
 tqdm 
 trimesh
 mmengine
+mmcv
 timm
