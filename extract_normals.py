@@ -64,7 +64,7 @@ def main():
     # Collect all JPG images
     images = sorted([
         f for f in os.listdir(input_dir)
-        if f.lower().endswith(".jpg") or f.lower().endswith(".jpeg")
+        if f.lower().endswith(".jpg") or f.lower().endswith(".jpeg") or f.lower().endswith(".png")
     ])
 
     if not images:
