@@ -286,7 +286,7 @@ def training(
             # Log and save
             
             training_report(tb_writer, scene_name, iteration, pixel_loss, loss, l1_loss, iter_start.elapsed_time(iter_end), testing_iterations, scene, render, (pipe, background))
-            if iteration%3000 == 0:
+            if iteration in [2000,6000,9000,13000,16000,19000,24000,29000,30000]:
                 scene.save(iteration)
             # Handle pruning operations
             if iteration % 500 == 0 and iteration < run_restricted_delaunay:
