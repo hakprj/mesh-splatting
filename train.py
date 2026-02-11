@@ -169,6 +169,7 @@ def training(
         gt_image = viewpoint_cam.original_image.cuda()
         if getattr(viewpoint_cam, "normal_map", None) is not None:
             gt_normal = viewpoint_cam.normal_map.cuda()
+            print("normal map calculated")
             seg_hr = gt_normal.unsqueeze(0)  # -> [1, 3, H, W]
             seg_ds_area = F.interpolate(seg_hr, size=(gt_image.shape[1], gt_image.shape[2]), mode="area")  # [1, 3, H0, W0]
             gt_normal = seg_ds_area.squeeze(0)  # -> [3, H0, W0]
