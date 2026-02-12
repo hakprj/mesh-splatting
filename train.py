@@ -61,6 +61,7 @@ def training(
         dataset,   
         opt, 
         pipe,
+        args,
         testing_iterations,
         checkpoint, 
         debug_from,
@@ -167,7 +168,7 @@ def training(
 
         # Loss
         gt_image = viewpoint_cam.original_image.cuda()
-        if getattr(viewpoint_cam, "normal_map", None) is not None:
+        if args.use_normal and getattr(viewpoint_cam, "normal_map", None) is not None:
             gt_normal = viewpoint_cam.normal_map.cuda()
             print("normal map calculated")
             seg_hr = gt_normal.unsqueeze(0)  # -> [1, 3, H, W]
@@ -235,7 +236,7 @@ def training(
 
         # Depth loss
         Ll1depth_pure = 0.0
-        if depth_l1_weight(iteration) > 0 and getattr(viewpoint_cam, "invdepthmap", None) is not None:
+        if args.use_depth and depth_l1_weight(iteration) > 0 and getattr(viewpoint_cam, "invdepthmap", None) is not None:
             invDepth = 1.0 / (render_pkg["expected_depth"] + 1e-6)
             mono_invdepth = viewpoint_cam.invdepthmap.cuda()
             depth_mask = viewpoint_cam.depth_mask.cuda()
@@ -262,7 +263,7 @@ def training(
             Lnormal = 0
 
         # supervised normal loss
-        if gt_normal is not None:
+        if gt_normal is not None and args.use_normal:
             lambda_normals_super = opt.lambda_normals_super if iteration > opt.iteration_mesh else 0
             normal_error = (1 - (rend_normal * gt_normal).sum(dim=0))[None]
             normal_loss_super = lambda_normals_super * (normal_error).mean()
@@ -489,6 +490,8 @@ if __name__ == "__main__":
     parser.add_argument("--test_iterations", nargs="+", type=int, default=[7_000, 30_000])
     parser.add_argument("--save_iterations", nargs="+", type=int, default=[7_000, 30_000])
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--use_depth", action="store_true")
+    parser.add_argument("--use_normal", action="store_true")
     parser.add_argument("--checkpoint_iterations", nargs="+", type=int, default=[])
     parser.add_argument("--start_checkpoint", type=str, default = None)
 
@@ -519,6 +522,7 @@ if __name__ == "__main__":
     training(lps,
              ops,
              pps,
+             args,
              args.test_iterations,
              args.start_checkpoint,
              args.debug_from,
