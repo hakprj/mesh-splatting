@@ -470,10 +470,9 @@ def training_report(tb_writer, scene_name, iteration, pixel_loss, loss, loss_fn,
                 if tb_writer:
                     tb_writer.add_scalar(config['name'] + '/loss_viewpoint - l1_loss', pixel_loss_test, iteration)
                     tb_writer.add_scalar(config['name'] + '/loss_viewpoint - psnr', psnr_test, iteration)
-
-                if tb_writer:
-                    tb_writer.add_scalar(config['name'] + '/loss_viewpoint - l1_loss', pixel_loss_test, iteration)
-                    tb_writer.add_scalar(config['name'] + '/loss_viewpoint - psnr', psnr_test, iteration)
+                    tb_writer.add_scalar(f"{config['name']}/loss_viewpoint - ssim",ssim_test,iteration)
+                    tb_writer.add_scalar(f"{config['name']}/loss_viewpoint - lpips_test",lpips_test,iteration)
+                    
 
         torch.cuda.empty_cache()
 
