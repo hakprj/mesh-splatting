@@ -51,8 +51,9 @@ class Camera(nn.Module):
         self.image_height = self.original_image.shape[1]
 
         if gt_alpha_mask is not None:
-            #self.original_image *= gt_alpha_mask.to(self.data_device) # IF YOU WANT A BACKGROUND FOR DTU COMMENT THIS
+            self.original_image *= gt_alpha_mask.to(self.data_device) # IF YOU WANT A BACKGROUND FOR DTU COMMENT THIS
             self.gt_alpha_mask = gt_alpha_mask.to(self.data_device)
+            print("gt alpha mask ")
         else:
             self.original_image *= torch.ones((1, self.image_height, self.image_width), device=self.data_device)
             self.gt_alpha_mask = None
