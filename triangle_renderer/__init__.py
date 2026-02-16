@@ -183,7 +183,7 @@ def render(viewpoint_camera, pc : TriangleModel, pipe, bg_color : torch.Tensor, 
     if model_path!="":
         rendered_path = os.path.join(model_path,"rendered_images")
         os.makedirs(rendered_path,exist_ok=True)
-        if viewpoint_camera.image_name == "frame_000000":
+        if viewpoint_camera.image_name == "frame_000083":
             img = rendered_image.clone().detach().cpu().numpy()[0] * 255
             cv2.putText(img, f"iter {iteration}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2)
             out_file_name= os.path.join(rendered_path,f"{viewpoint_camera.image_name}_iter_{iteration}.jpeg")
